@@ -220,6 +220,7 @@ nav h1 a {
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
+  margin-left: 40px;
 }
 #reviews-list {
   padding: 0;
@@ -227,15 +228,41 @@ nav h1 a {
 #reviews-list li {
   background-color: #fff;
   border: 2px solid #f3f3f3;
+  border-top-left-radius: 16px;
+  border-bottom-right-radius: 16px;
   display: block;
   list-style-type: none;
   margin: 0 auto 30px;
   overflow: hidden;
-  padding: 0 20px 20px;
-  width: 85%;
+  width: 90%;
 }
 #reviews-list li p {
-  margin: 0 0 10px;
+  margin: 0 0 16px;
+  padding: 0 20px 0px;
+}
+.review-header {
+  background-color: #333;
+  color: #fff;
+  font-size: 20px;
+  font-weight: normal;
+  padding: 6px 20px;
+}
+.review-header span {
+  position: absolute;
+  right: 100px;
+  padding: 6px;
+  color: #ddd;
+  font-size: 14px;
+}
+.rating-highlight {
+  background-color: #f58500;
+  color: #fff;
+  font-size: 14px;
+  padding: 2px 6px;
+  margin: 0 0 16px 20px;
+  display: inline-block;
+  text-transform: uppercase;
+  border-radius: 4px;
 }
 #restaurant-hours td {
   color: #666;
