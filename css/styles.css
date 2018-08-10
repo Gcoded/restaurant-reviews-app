@@ -49,6 +49,11 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-transform: uppercase;
 }
 /* ====================== Navigation ====================== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+}
 nav {
   padding: 24px;
   background-color: #252831;
@@ -99,6 +104,7 @@ nav h1 a {
   height: 400px;
   width: 100%;
   background-color: #ccc;
+  z-index: 0;
 }
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
@@ -254,6 +260,13 @@ nav h1 a {
   padding: 6px;
   color: #ddd;
   font-size: 14px;
+}
+@media screen and (max-width: 400px) {
+  .review-header span {
+    position: static;
+    display: block;
+    padding: 0;
+  }
 }
 .rating-highlight {
   background-color: #f58500;
