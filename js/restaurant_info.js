@@ -82,11 +82,9 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-  name.tabIndex = 0;
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
-  address.tabIndex = 0;
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
@@ -135,7 +133,6 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
-  title.tabIndex = 0;
   container.appendChild(title);
 
   if (!reviews) {
@@ -159,7 +156,6 @@ createReviewHTML = (review) => {
   const name = document.createElement('h3');
   name.className = 'review-header';
   name.innerHTML = review.name;
-  name.tabIndex = 0;
   const date = document.createElement('span');
   date.innerHTML = review.date;
   name.appendChild(date);
@@ -173,6 +169,8 @@ createReviewHTML = (review) => {
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
   li.appendChild(comments);
+
+  li.tabIndex = 0;
 
   return li;
 }
