@@ -24,8 +24,7 @@ module.exports = function(grunt) {
             suffix: '_2x'
           },
           {
-            width: 1600,
-            suffix: '_2x',
+            width: 1000,
             upscale: true
           }]
         },

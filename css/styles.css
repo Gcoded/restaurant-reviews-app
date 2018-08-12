@@ -220,6 +220,8 @@ nav h1 a {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   padding: 40px 20px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 #reviews-container h2 {
@@ -255,15 +257,14 @@ nav h1 a {
   padding: 6px 20px;
 }
 .review-header span {
-  position: absolute;
-  right: 100px;
+  float: right;
   padding: 6px;
   color: #ddd;
   font-size: 14px;
 }
 @media screen and (max-width: 400px) {
   .review-header span {
-    position: static;
+    float: none;
     display: block;
     padding: 0;
   }
