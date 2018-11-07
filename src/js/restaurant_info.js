@@ -1,5 +1,5 @@
 import DBHelper from './dbhelper';
-// import './register-sw';
+import './registerSW';
 
 let restaurant;
 var newMap;

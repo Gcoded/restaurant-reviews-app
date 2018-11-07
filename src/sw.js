@@ -1,5 +1,11 @@
+import idb from 'idb';
+
 
 let staticCacheName = 'mws-restaurant-v01';
+
+const restaurantsDB = idb.open('restaurants', 1, function(upgradeDb) {
+  let restaurantStore = upgradeDb.createObjectStore('restaurantStore', { keyPath: 'id' });
+});
 
 self.addEventListener('install', function(event) {
   let urlsToCache = [
@@ -20,20 +26,62 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  let cacheRequest = event.request;
-  if (cacheRequest.url.includes('restaurant.html')) {
-    cacheRequest = new Request('restaurant.html');
+  let fetchRequest = event.request;
+
+  if (fetchRequest.url.includes('1337')) {
+
+    event.respondWith(
+      restaurantsDB.then(function(db) {
+        let tx = db.transaction('restaurantStore');
+        let store = tx.objectStore('restaurantStore');
+        return store.get(-1);
+      }).then(function(response) {
+        if(response) {
+          return response.jsonData;
+        }
+        else {
+          return fetch(fetchRequest)
+          .then(function(data) {
+            return data.json();
+          }).then(function(jsonData) {
+            return restaurantsDB.then(function(db) {
+              let tx = db.transaction('restaurantStore', 'readwrite');
+              let store = tx.objectStore('restaurantStore');
+              jsonData.forEach(function(rest) {
+                store.put({id: -1, jsonData});
+                return tx.complete;
+              });
+              return jsonData;
+            })
+          });
+        }
+      }).then(function(finalResponse) {
+        return new Response(JSON.stringify(finalResponse));
+      })
+    );
+
   }
 
-  event.respondWith(
-    caches.match(cacheRequest).then(function(response) {
-      if(response)
-        return response;
-      else
-        return fetch(cacheRequest);
-    })
-  );
+  else {
+
+    let cacheRequest = event.request;
+    if (cacheRequest.url.includes('restaurant.html')) {
+      cacheRequest = new Request('restaurant.html');
+    }
+    event.respondWith(
+      caches.match(cacheRequest).then(function(response) {
+        if(response)
+          return response;
+        else
+          return fetch(cacheRequest);
+      })
+    );
+
+  }
+
+
 });
+
 
 
 
