@@ -9,7 +9,7 @@ export default class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -17,7 +17,7 @@ export default class DBHelper {
    */
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', `${DBHelper.DATABASE_URL}/restaurants`);
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!
         const json = JSON.parse(xhr.responseText);
@@ -48,6 +48,21 @@ export default class DBHelper {
         }
       }
     });
+  }
+
+  static fetchReviewsByRestaurantId(id, callback) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`);
+    xhr.onload = () => {
+      if (xhr.status === 200) { // Got a success response from server!
+        const json = JSON.parse(xhr.responseText);
+        callback(json);
+      } else { // Oops!. Got an error from server.
+        const error = (`Request failed. Returned status of ${xhr.status}`);
+        console.log(error);
+      }
+    };
+    xhr.send();
   }
 
   /**
