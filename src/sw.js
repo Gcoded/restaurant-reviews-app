@@ -64,6 +64,7 @@ self.addEventListener('fetch', function(event) {
               let store = tx.objectStore('restaurantStore');
               jsonData.forEach(function(rest) {
                 store.put({id: -1, jsonData});
+                store.put(rest);
                 return tx.complete;
               });
               return jsonData;

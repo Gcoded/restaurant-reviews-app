@@ -101,6 +101,10 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  const favDiv = document.getElementById('fav-button');
+  const favButton = DBHelper.createFavoriteButton(restaurant);
+  favDiv.append(favButton);
+
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();

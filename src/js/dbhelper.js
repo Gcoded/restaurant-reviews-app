@@ -65,6 +65,36 @@ export default class DBHelper {
     xhr.send();
   }
 
+  static createFavoriteButton(restaurant) {
+    const favorite = document.createElement('button');
+    favorite.className = 'fav';
+    favorite.id = restaurant.id;
+    favorite.innerHTML = 'Favorite';
+    favorite.setAttribute('aria-label', `Mark ${restaurant.name} as a favorite`);
+    favorite.setAttribute('aria-pressed', restaurant.is_favorite);
+    favorite.onclick = DBHelper.markAsFavorite;
+    return favorite;
+  }
+
+  static markAsFavorite(event) {
+  let button = event.target;
+  let restID = button.id;
+  let isFav = button.getAttribute('aria-pressed') === 'true';
+
+  fetch(`${DBHelper.DATABASE_URL}/restaurants/${restID}/?is_favorite=${!isFav}`, {method: 'PUT'})
+    .then(response => {
+      if (response.status === 200) {
+        return response.json();
+      }
+      else {
+        return Promise.reject('Not able to add as a favorite');
+      }
+    }).then(json => {
+      console.log(json);
+      button.setAttribute('aria-pressed', !isFav);
+    });
+}
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */

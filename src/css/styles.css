@@ -181,6 +181,27 @@ nav h1 a {
   margin: 0 30px 0;
   font-size: 11pt;
 }
+
+.fav {
+  background-color: #b3b3b3;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  margin: 10px 90px 0;
+  padding: 10px 0;
+  text-align: center;
+  width: calc(100% - 180px);
+  cursor: pointer;
+}
+
+.fav:hover, .fav:focus {
+  background-color: #cccccc;
+}
+
+.fav[aria-pressed=true] {
+  background-color: red;
+}
+
 #restaurants-list li a {
   background-color: orange;
   border-bottom: 3px solid #eee;
