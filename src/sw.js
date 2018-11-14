@@ -3,8 +3,14 @@ import idb from 'idb';
 
 let staticCacheName = 'mws-restaurant-v01';
 
-const restaurantsDB = idb.open('restaurants', 1, function(upgradeDb) {
-  let restaurantStore = upgradeDb.createObjectStore('restaurantStore', { keyPath: 'id' });
+const restaurantsDB = idb.open('restaurants', 2, function(upgradeDb) {
+  switch (upgradeDb.oldVersion) {
+    case 0:
+      upgradeDb.createObjectStore('restaurantStore', { keyPath: 'id' });
+    case 1:
+      let reviewStore = upgradeDb.createObjectStore('reviewStore', { keyPath: 'id' });
+      reviewStore.createIndex('restID', 'restaurant_id');
+  }
 });
 
 self.addEventListener('install', function(event) {
@@ -37,7 +43,7 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   let fetchRequest = event.request;
 
-  if (fetchRequest.url.includes('1337')) {
+  if (fetchRequest.url.includes('1337/restaurants')) {
 
     event.respondWith(
       restaurantsDB.then(function(db) {
@@ -70,7 +76,41 @@ self.addEventListener('fetch', function(event) {
     );
 
   }
+  else if (fetchRequest.url.includes('1337/reviews')) {
 
+    event.respondWith(
+      restaurantsDB.then(function(db) {
+        let tx = db.transaction('reviewStore');
+        let revStore = tx.objectStore('reviewStore');
+        let revIndex = revStore.index('restID');
+        let id = fetchRequest.url.slice(-1);
+        return revIndex.getAll(parseInt(id));
+      }).then(function(response) {
+        if(response.length !== 0) {
+          return response;
+        }
+        else {
+          return fetch(fetchRequest)
+          .then(function(data) {
+            return data.json();
+          }).then(function(jsonData) {
+            return restaurantsDB.then(function(db) {
+              let tx = db.transaction('reviewStore', 'readwrite');
+              let store = tx.objectStore('reviewStore');
+              jsonData.forEach(function(rev) {
+                store.put(rev);
+                return tx.complete;
+              });
+              return jsonData;
+            })
+          });
+        }
+      }).then(function(finalResponse) {
+        return new Response(JSON.stringify(finalResponse));
+      })
+    );
+
+  }
   else {
 
     let cacheRequest = event.request;
