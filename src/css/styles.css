@@ -294,13 +294,7 @@ nav h1 a {
   color: #ddd;
   font-size: 14px;
 }
-@media screen and (max-width: 400px) {
-  .review-header span {
-    float: none;
-    display: block;
-    padding: 0;
-  }
-}
+
 .rating-highlight {
   background-color: #f58500;
   color: #fff;
@@ -317,7 +311,7 @@ nav h1 a {
 
 #review-form {
   margin: 0 auto;
-  width: 500px;
+  width: 400px;
   height: 400px;
   font-size: 18px;
   text-align: center;
@@ -325,9 +319,10 @@ nav h1 a {
   border: 1px solid #fff;
 }
 
-#review-form h5, #review-form button {
+#review-form h5 {
   font-size: 18px;
 }
+
 input, textarea {
   font-size: 16px;
 }
@@ -337,8 +332,23 @@ label {
 }
 
 #comment {
-  height: 150px;
   width: 300px;
+  height: 150px;
 }
 
+#review-form button {
+  font-size: 18px;
+  background-color: #54a4da;
+}
+
+@media screen and (max-width: 400px) {
+  .review-header span {
+    float: none;
+    display: block;
+    padding: 0;
+  }
+  #review-form {
+    max-width: 300px;
+  }
+}
 
