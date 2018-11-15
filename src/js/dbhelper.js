@@ -90,9 +90,37 @@ export default class DBHelper {
         return Promise.reject('Not able to add as a favorite');
       }
     }).then(json => {
-      console.log(json);
       button.setAttribute('aria-pressed', !isFav);
     });
+}
+
+static getFormData(id) {
+  const nameInput = document.getElementById('name');
+  const ratingInput = document.getElementById('rating');
+  const commentInput = document.getElementById('comment');
+  const properties = {
+      "restaurant_id": id,
+      "name": nameInput.value,
+      "rating": ratingInput.value,
+      "comments": commentInput.value
+    };
+
+  fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+    method: 'POST',
+    body: JSON.stringify(properties)
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return Promise.reject('Not able to add review');
+      }
+    });
+
+    nameInput.value = '';
+    ratingInput.value = '';
+    commentInput.value = '';
 }
 
   /**

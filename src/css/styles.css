@@ -284,7 +284,7 @@ nav h1 a {
 .review-header {
   background-color: #333;
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: normal;
   padding: 6px 20px;
 }
@@ -314,3 +314,31 @@ nav h1 a {
 #restaurant-hours {
   margin: 0 auto;
 }
+
+#review-form {
+  margin: 0 auto;
+  width: 500px;
+  height: 400px;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #fff;
+}
+
+#review-form h5, #review-form button {
+  font-size: 18px;
+}
+input, textarea {
+  font-size: 16px;
+}
+
+label {
+  display: block;
+}
+
+#comment {
+  height: 150px;
+  width: 300px;
+}
+
+

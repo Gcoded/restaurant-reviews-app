@@ -1,5 +1,5 @@
 import DBHelper from './dbhelper';
-import './registerSW';
+// import './registerSW';
 
 let restaurant;
 var newMap;
@@ -153,6 +153,16 @@ const fillReviewsHTML = (reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+
+  const form = document.getElementById('review-form');
+  const submitButton = document.createElement('button');
+  submitButton.type = 'submit';
+  submitButton.innerHTML = 'Submit';
+  submitButton.onclick = event => {
+    event.preventDefault();
+    DBHelper.getFormData(self.restaurant.id);
+  }
+  form.appendChild(submitButton);
 }
 
 /**
@@ -181,6 +191,8 @@ const createReviewHTML = (review) => {
 
   return li;
 }
+
+
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
