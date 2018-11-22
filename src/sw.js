@@ -43,16 +43,22 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   let fetchRequest = event.request;
 
-  if (fetchRequest.url.includes('1337/restaurants')) {
+  if (fetchRequest.url.includes('?is_favorite')) {
+    return fetch(fetchRequest)
+    .then(function(data) {
+      return data.json();
+    })
+  }
+  else if (fetchRequest.url.includes('1337/restaurants')) {
 
     event.respondWith(
       restaurantsDB.then(function(db) {
         let tx = db.transaction('restaurantStore');
         let store = tx.objectStore('restaurantStore');
-        return store.get(-1);
+        return store.getAll();
       }).then(function(response) {
-        if(response) {
-          return response.jsonData;
+        if(response.length !== 0) {
+          return response;
         }
         else {
           return fetch(fetchRequest)
@@ -63,7 +69,6 @@ self.addEventListener('fetch', function(event) {
               let tx = db.transaction('restaurantStore', 'readwrite');
               let store = tx.objectStore('restaurantStore');
               jsonData.forEach(function(rest) {
-                store.put({id: -1, jsonData});
                 store.put(rest);
                 return tx.complete;
               });

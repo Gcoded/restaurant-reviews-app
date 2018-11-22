@@ -1,3 +1,5 @@
+import idb from 'idb';
+
 /**
  * Common database helper functions.
  */
@@ -83,7 +85,7 @@ export default class DBHelper {
 
   fetch(`${DBHelper.DATABASE_URL}/restaurants/${restID}/?is_favorite=${!isFav}`, {method: 'PUT'})
     .then(response => {
-      if (response.status === 200) {
+      if (response.ok) {
         return response.json();
       }
       else {
@@ -91,7 +93,20 @@ export default class DBHelper {
       }
     }).then(json => {
       button.setAttribute('aria-pressed', !isFav);
+      const restObj = json;
+      DBHelper.updateRestaurantDB(restObj);
     });
+}
+
+static updateRestaurantDB(restObj) {
+  const restaurantsDB = idb.open('restaurants');
+  restaurantsDB.then(function(db) {
+    let tx = db.transaction('restaurantStore', 'readwrite');
+    let store = tx.objectStore('restaurantStore');
+    store.put(restObj);
+    return tx.complete;
+  });
+
 }
 
 static getFormData(id) {
