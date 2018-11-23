@@ -160,7 +160,7 @@ const fillReviewsHTML = (reviews) => {
   submitButton.innerHTML = 'Submit';
   submitButton.onclick = event => {
     event.preventDefault();
-    DBHelper.getFormData(self.restaurant.id);
+    DBHelper.saveReview(self.restaurant.id);
   }
   form.appendChild(submitButton);
 }

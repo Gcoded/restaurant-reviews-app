@@ -109,7 +109,7 @@ static updateRestaurantDB(restObj) {
 
 }
 
-static getFormData(id) {
+static saveReview(id) {
   const nameInput = document.getElementById('name');
   const ratingInput = document.getElementById('rating');
   const commentInput = document.getElementById('comment');
@@ -124,18 +124,11 @@ static getFormData(id) {
     method: 'POST',
     body: JSON.stringify(properties)
   })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      else {
-        return Promise.reject('Not able to add review');
-      }
-    });
 
-    nameInput.value = '';
-    ratingInput.value = '';
-    commentInput.value = '';
+  nameInput.value = '';
+  ratingInput.value = '';
+  commentInput.value = '';
+
 }
 
   /**
