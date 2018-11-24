@@ -84,18 +84,18 @@ export default class DBHelper {
   let isFav = button.getAttribute('aria-pressed') === 'true';
 
   fetch(`${DBHelper.DATABASE_URL}/restaurants/${restID}/?is_favorite=${!isFav}`, {method: 'PUT'})
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      else {
-        return Promise.reject('Not able to add as a favorite');
-      }
-    }).then(json => {
-      button.setAttribute('aria-pressed', !isFav);
-      const restObj = json;
-      DBHelper.updateRestaurantDB(restObj);
-    });
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    else {
+      return Promise.reject('Not able to add as a favorite');
+    }
+  }).then(json => {
+    button.setAttribute('aria-pressed', !isFav);
+    const restObj = json;
+    DBHelper.updateRestaurantDB(restObj);
+  });
 }
 
 static updateRestaurantDB(restObj) {
@@ -124,18 +124,15 @@ static saveReview(id) {
   fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
     method: 'POST',
     body: JSON.stringify(properties)
-  })
-  .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      else {
-        return Promise.reject('Not able to add review to server');
-      }
-    }).then(json => {
-      const revObj = json;
-      DBHelper.addReviewToIDB(revObj);
-    });
+  }).then(response => {
+    return response.json();
+  }).then(json => {
+    const revObj = json;
+    DBHelper.addReviewToIDB(revObj);
+  }).catch(error => {
+    console.log(error, 'Not able to add review to server, saving to IDB');
+    DBHelper.addReviewToPending(properties);
+  });
 }
 
 static addReviewToIDB(revObj) {
@@ -143,6 +140,19 @@ static addReviewToIDB(revObj) {
   restaurantsDB.then(function(db) {
     let tx = db.transaction('reviewStore', 'readwrite');
     let store = tx.objectStore('reviewStore');
+    store.put(revObj);
+    return tx.complete;
+  });
+
+  DBHelper.clearReviewForm();
+
+}
+
+static addReviewToPending(revObj) {
+  const restaurantsDB = idb.open('restaurants');
+  restaurantsDB.then(function(db) {
+    let tx = db.transaction('pendingStore', 'readwrite');
+    let store = tx.objectStore('pendingStore');
     store.put(revObj);
     return tx.complete;
   });

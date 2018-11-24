@@ -3,13 +3,16 @@ import idb from 'idb';
 
 let staticCacheName = 'mws-restaurant-v01';
 
-const restaurantsDB = idb.open('restaurants', 2, function(upgradeDb) {
+const restaurantsDB = idb.open('restaurants', 3, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
       upgradeDb.createObjectStore('restaurantStore', { keyPath: 'id' });
     case 1:
       let reviewStore = upgradeDb.createObjectStore('reviewStore', { keyPath: 'id' });
       reviewStore.createIndex('restID', 'restaurant_id');
+    case 2:
+      let pendingStore = upgradeDb.createObjectStore('pendingStore', {autoIncrement: true});
+      pendingStore.createIndex('restID', 'restaurant_id');
   }
 });
 
@@ -117,12 +120,10 @@ self.addEventListener('fetch', function(event) {
     );
 
   }
-  else {
+  else if (fetchRequest.url.includes('restaurant.html')) {
 
-    let cacheRequest = event.request;
-    if (cacheRequest.url.includes('restaurant.html')) {
-      cacheRequest = new Request('restaurant.html');
-    }
+    let cacheRequest = new Request('restaurant.html');
+
     event.respondWith(
       caches.match(cacheRequest).then(function(response) {
         if(response)
