@@ -114,21 +114,47 @@ static saveReview(id) {
   const ratingInput = document.getElementById('rating');
   const commentInput = document.getElementById('comment');
   const properties = {
-      "restaurant_id": id,
-      "name": nameInput.value,
-      "rating": ratingInput.value,
-      "comments": commentInput.value
-    };
+    "restaurant_id": id,
+    "name": nameInput.value,
+    "rating": ratingInput.value,
+    "comments": commentInput.value,
+    "createdAt": Date.now()
+  };
 
   fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
     method: 'POST',
     body: JSON.stringify(properties)
   })
+  .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      else {
+        return Promise.reject('Not able to add review to server');
+      }
+    }).then(json => {
+      const revObj = json;
+      DBHelper.addReviewToIDB(revObj);
+    });
+}
 
-  nameInput.value = '';
-  ratingInput.value = '';
-  commentInput.value = '';
+static addReviewToIDB(revObj) {
+  const restaurantsDB = idb.open('restaurants');
+  restaurantsDB.then(function(db) {
+    let tx = db.transaction('reviewStore', 'readwrite');
+    let store = tx.objectStore('reviewStore');
+    store.put(revObj);
+    return tx.complete;
+  });
 
+  DBHelper.clearReviewForm();
+
+}
+
+static clearReviewForm() {
+  document.getElementById('name').value = '';
+  document.getElementById('rating').value = '';
+  document.getElementById('comment').value = '';
 }
 
   /**

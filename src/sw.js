@@ -82,28 +82,7 @@ self.addEventListener('fetch', function(event) {
     );
 
   }
-  else if (fetchRequest.method === 'POST') {
-
-    return fetch(fetchRequest)
-    .then(function(response) {
-      if (response.ok) {
-        return response.json()
-        .then(function(reviewObj) {
-          return restaurantsDB.then(function(db) {
-            let tx = db.transaction('reviewStore', 'readwrite');
-            let store = tx.objectStore('reviewStore');
-            store.put(reviewObj);
-            return tx.complete;
-          })
-        });
-      }
-      else {
-        return Promise.reject('Not able to add review');
-      }
-    });
-
-  }
-  else if (fetchRequest.url.includes('1337/reviews')) {
+  else if (fetchRequest.url.includes('1337/reviews/?restaurant_id')) {
 
     event.respondWith(
       restaurantsDB.then(function(db) {
