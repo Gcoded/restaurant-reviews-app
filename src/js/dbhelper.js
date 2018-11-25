@@ -131,9 +131,11 @@ static saveReview(id) {
   }).then(json => {
     const revObj = json;
     DBHelper.addReviewToIDB(revObj);
+    DBHelper.clearReviewForm();
   }).catch(error => {
     console.log(error, 'Not able to add review to server, saving to IDB pending');
     DBHelper.addReviewToPending(properties);
+    DBHelper.clearReviewForm();
   });
 }
 
@@ -145,9 +147,6 @@ static addReviewToIDB(revObj) {
     store.put(revObj);
     return tx.complete;
   });
-
-  DBHelper.clearReviewForm();
-
 }
 
 static addReviewToPending(revObj) {
@@ -159,7 +158,6 @@ static addReviewToPending(revObj) {
     return tx.complete;
   });
 
-  DBHelper.clearReviewForm();
   if (!attemptingToPost) {
     DBHelper.attemptToPostReviews();
   }
@@ -175,6 +173,11 @@ static attemptToPostReviews() {
     let allRevs = store.getAll();
     return allRevs;
   }).then(function(pendingRevs) {
+
+    if (pendingRevs.length === 0) {
+      attemptingToPost = false;
+      return;
+    }
 
     pendingRevs.forEach(function(rev, index) {
       fetch(`${DBHelper.DATABASE_URL}/reviews/`, {

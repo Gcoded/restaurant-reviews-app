@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap(); // added
   fetchNeighborhoods();
   fetchCuisines();
+  setTimeout(DBHelper.attemptToPostReviews, 5000);
 });
 
 /**
