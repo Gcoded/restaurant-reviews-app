@@ -143,6 +143,16 @@ const fillReviewsHTML = (reviews) => {
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
+  const form = document.getElementById('review-form');
+  const submitButton = document.createElement('button');
+  submitButton.type = 'submit';
+  submitButton.innerHTML = 'Submit';
+  submitButton.onclick = event => {
+    event.preventDefault();
+    DBHelper.saveReview(self.restaurant.id);
+  }
+  form.appendChild(submitButton);
+
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -154,16 +164,6 @@ const fillReviewsHTML = (reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-
-  const form = document.getElementById('review-form');
-  const submitButton = document.createElement('button');
-  submitButton.type = 'submit';
-  submitButton.innerHTML = 'Submit';
-  submitButton.onclick = event => {
-    event.preventDefault();
-    DBHelper.saveReview(self.restaurant.id);
-  }
-  form.appendChild(submitButton);
 }
 
 /**

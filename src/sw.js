@@ -47,10 +47,8 @@ self.addEventListener('fetch', function(event) {
   let fetchRequest = event.request;
 
   if (fetchRequest.url.includes('?is_favorite')) {
-    return fetch(fetchRequest)
-    .then(function(data) {
-      return data.json();
-    })
+    // let request go to server and handle response in dbhelper.js
+
   }
   else if (fetchRequest.url.includes('1337/restaurants')) {
 
@@ -83,6 +81,10 @@ self.addEventListener('fetch', function(event) {
         return new Response(JSON.stringify(finalResponse));
       })
     );
+
+  }
+  else if (fetchRequest.method === 'POST') {
+    // let request go to server and handle response in dbhelper.js
 
   }
   else if (fetchRequest.url.includes('1337/reviews/?restaurant_id')) {
@@ -120,9 +122,12 @@ self.addEventListener('fetch', function(event) {
     );
 
   }
-  else if (fetchRequest.url.includes('restaurant.html')) {
+  else {
 
-    let cacheRequest = new Request('restaurant.html');
+    let cacheRequest = fetchRequest;
+    if (cacheRequest.url.includes('restaurant.html')) {
+      cacheRequest = new Request('restaurant.html');
+    }
 
     event.respondWith(
       caches.match(cacheRequest).then(function(response) {

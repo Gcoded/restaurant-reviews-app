@@ -64,7 +64,12 @@ export default class DBHelper {
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
         console.log(error);
+        callback();
       }
+    };
+    xhr.onerror = () => {
+      console.log('Request failed');
+      callback();
     };
     xhr.send();
   }
