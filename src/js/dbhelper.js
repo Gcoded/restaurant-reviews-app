@@ -3,6 +3,8 @@ import idb from 'idb';
 /**
  * Common database helper functions.
  */
+let attemptingToPost = false;
+
 export default class DBHelper {
 
   /**
@@ -130,7 +132,7 @@ static saveReview(id) {
     const revObj = json;
     DBHelper.addReviewToIDB(revObj);
   }).catch(error => {
-    console.log(error, 'Not able to add review to server, saving to IDB');
+    console.log(error, 'Not able to add review to server, saving to IDB pending');
     DBHelper.addReviewToPending(properties);
   });
 }
@@ -158,6 +160,46 @@ static addReviewToPending(revObj) {
   });
 
   DBHelper.clearReviewForm();
+  if (!attemptingToPost) {
+    DBHelper.attemptToPostReviews();
+  }
+
+}
+
+static attemptToPostReviews() {
+  attemptingToPost = true;
+  const restaurantsDB = idb.open('restaurants');
+  restaurantsDB.then(function(db) {
+    let tx = db.transaction('pendingStore');
+    let store = tx.objectStore('pendingStore');
+    let allRevs = store.getAll();
+    return allRevs;
+  }).then(function(pendingRevs) {
+
+    pendingRevs.forEach(function(rev, index) {
+      fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+        method: 'POST',
+        body: JSON.stringify(rev)
+      }).then(response => {
+        return response.json();
+      }).then(json => {
+        const revObj = json;
+        DBHelper.addReviewToIDB(revObj);
+        //If this is last review, clear store and update attempting flag to false
+        if (index === pendingRevs.length-1) {
+          DBHelper.clearIDBPendingStore();
+          attemptingToPost = false;
+        }
+      }).catch(error => {
+        console.log(error, 'No connection, will post review to server when connection is re-established...');
+        //If this is last review of array and throws error, then attempt again...
+        if (index === pendingRevs.length-1) {
+          setTimeout(DBHelper.attemptToPostReviews, 7000);
+        }
+      });
+    });
+
+  });
 
 }
 
@@ -165,6 +207,15 @@ static clearReviewForm() {
   document.getElementById('name').value = '';
   document.getElementById('rating').value = '';
   document.getElementById('comment').value = '';
+}
+
+static clearIDBPendingStore() {
+  const restaurantsDB = idb.open('restaurants');
+  restaurantsDB.then(function(db) {
+    let tx = db.transaction('pendingStore', 'readwrite');
+    let store = tx.objectStore('pendingStore');
+    store.clear();
+  });
 }
 
   /**
