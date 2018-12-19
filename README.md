@@ -2,7 +2,7 @@
 ---
 ## Project Overview:
 
-This project is from Udacity's Mobile Web Specialist Nanodegree program.  I updated the app by converting it from a static webpage to a Progressive Web Application.  The following features were added:
+This project is for Udacity's Mobile Web Specialist Nanodegree program (forked from [here](https://github.com/udacity/mws-restaurant-stage-1)).  I updated the app by converting it from a static webpage to a Progressive Web Application.  The following features were added:
 
 - Responsive on different sized displays and accessible for screen reader use
 - Service worker capabilities to create a seamless offline experience
