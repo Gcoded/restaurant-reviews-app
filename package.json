@@ -20,7 +20,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-mkdir": "^1.0.0",
     "grunt-responsive-images": "^1.10.1",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-newer": "^1.4.0",
     "gulp-responsive": "^2.11.0",
     "gulp-sourcemaps": "^2.6.4",
